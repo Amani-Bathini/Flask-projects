@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% block title %}NotesApp - Create Account{% endblock %}
+{% block body_class %}auth-body{% endblock %}
+
+{% block content %}
+<div class="auth-card-wrapper">
+    <div class="auth-split-card">
+        <!-- Brand Info Side -->
+        <div class="auth-brand-side">
+            <div class="brand-side-content">
+                <div class="brand-logo-large">✨</div>
+                <h2>Join NotesApp</h2>
+                <p class="brand-tagline">Start organizing your thoughts and tasks in one modern place.</p>
+                <div class="brand-features">
+                    <div class="feat-item">
+                        <span class="feat-check">✓</span>
+                        <span>Free forever, simple to use</span>
+                    </div>
+                    <div class="feat-item">
+                        <span class="feat-check">✓</span>
+                        <span>Instant live search & card layout</span>
+                    </div>
+                    <div class="feat-item">
+                        <span class="feat-check">✓</span>
+                        <span>Secure password encryption</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Side -->
+        <div class="auth-form-side">
+            <div class="form-side-header">
+                <h3>Get Started</h3>
+                <p>Create your personal account in seconds</p>
+            </div>
+
+            <form method="post" class="auth-form">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <div class="input-field-group">
+                        <span class="input-icon">👤</span>
+                        <input type="text" id="username" name="username" placeholder="Choose a username" required autocomplete="username" autofocus>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <div class="input-field-group">
+                        <span class="input-icon">📧</span>
+                        <input type="email" id="email" name="email" placeholder="name@example.com" required autocomplete="email">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="input-field-group">
+                        <span class="input-icon">🔒</span>
+                        <input type="password" id="password" name="password" placeholder="Create a strong password" required autocomplete="new-password">
+                        <button type="button" class="pwd-toggle-btn" onclick="togglePasswordVisibility('password', this)" title="Show/Hide Password">👁️</button>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-auth-submit">Create Account</button>
+            </form>
+
+            {% if info %}
+                <div class="auth-alert">{{ info }}</div>
+            {% endif %}
+
+            <div class="auth-footer-prompt">
+                <span>Already have an account?</span>
+                <a href="{{ url_for('login') }}" class="link-switch-auth">Sign In</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function togglePasswordVisibility(fieldId, btn) {
+        const input = document.getElementById(fieldId);
+        if (input.type === 'password') {
+            input.type = 'text';
+            btn.textContent = '🙈';
+        } else {
+            input.type = 'password';
+            btn.textContent = '👁️';
+        }
+    }
+</script>
+{% endblock %}

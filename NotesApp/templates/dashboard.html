@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+
+{% block title %}NotesApp - My Notes{% endblock %}
+{% block body_class %}dashboard-body{% endblock %}
+
+{% block content %}
+<div class="dashboard-wrapper">
+    <!-- Top Welcome & Stats Banner -->
+    <div class="dashboard-banner">
+        <div class="banner-greeting">
+            <h2>NotesApp</h2>
+            <p class="banner-sub">Welcome back, <span class="highlight-user">{{ session.get('username', 'Friend') }}</span> ✨ • Capture your thoughts, ideas, and daily tasks in one creative place.</p>
+        </div>
+        <div class="banner-stats">
+            <div class="stat-pill">
+                <span class="stat-num" id="totalNotesCount">{{ notes|length if notes else 0 }}</span>
+                <span class="stat-label">Total Notes</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Note Creator Composer -->
+    <div class="note-creator-card">
+        <form method="post" action="/createnote" class="creator-form" id="createNoteForm">
+            <div class="creator-input-wrapper">
+                <textarea 
+                    name="note" 
+                    id="newNoteTextarea" 
+                    class="creator-textarea" 
+                    placeholder="Take a note or write down an idea..." 
+                    rows="2" 
+                    required></textarea>
+            </div>
+            <div class="creator-footer">
+                <span class="char-count" id="charCounter">0 characters</span>
+                <button type="submit" class="btn-create-note">
+                    <span>➕ Add Note</span>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Notes Section Title Bar -->
+    <div class="notes-view-header">
+        <div class="view-title-group">
+            <h3>All Notes</h3>
+            <span class="results-badge" id="visibleNotesCount">{{ notes|length if notes else 0 }} visible</span>
+        </div>
+    </div>
+
+    <!-- Notes Masonry Grid -->
+    <div class="notes-masonry-grid" id="notesGrid">
+        {% if notes and notes|length > 0 %}
+            {% for i in notes %}
+                <article class="note-item-card" data-note-id="{{ i.id }}" data-content="{{ i.content|lower }}">
+                    <div class="note-card-top">
+                        <span class="note-tag-badge">Note #{{ loop.index }}</span>
+                        {% if i.created_at %}
+                            <span class="note-timestamp" title="{{ i.created_at }}">
+                                {{ i.created_at.strftime('%d %b, %I:%M %p') if i.created_at.strftime is defined else i.created_at }}
+                            </span>
+                        {% endif %}
+                    </div>
+
+                    <div class="note-card-content">
+                        <p class="note-text-body">{{ i.content }}</p>
+                    </div>
+
+                    <div class="note-card-actions">
+                        <button type="button" class="action-btn copy-btn" onclick="copyNoteText(this, `{{ i.content|replace('\\', '\\\\')|replace('`', '\\`')|replace('$', '\\$') }}`)" title="Copy Note">
+                            <span class="btn-icon">📋</span>
+                            <span class="btn-text">Copy</span>
+                        </button>
+                        <a href="/editnote/{{ i.id }}" class="action-btn edit-btn" title="Edit Note">
+                            <span class="btn-icon">✏️</span>
+                            <span class="btn-text">Edit</span>
+                        </a>
+                        <a href="/deletenote/{{ i.id }}" class="action-btn delete-btn" onclick="return confirm('Delete this note permanently?');" title="Delete Note">
+                            <span class="btn-icon">🗑️</span>
+                            <span class="btn-text">Delete</span>
+                        </a>
+                    </div>
+                </article>
+            {% endfor %}
+        {% else %}
+            <div class="empty-notes-canvas" id="emptyStateBox">
+                <div class="empty-art">💡</div>
+                <h4>Your canvas is empty</h4>
+                <p>Start writing your thoughts above to create your very first note!</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- No Search Results Found (Hidden by default) -->
+    <div class="no-search-results" id="noSearchResults" style="display: none;">
+        <div class="empty-art">🔍</div>
+        <h4>No matching notes found</h4>
+        <p>Try searching with different keywords.</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Live Search Filter
+    function filterNotesLive() {
+        const query = document.getElementById('liveSearchInput').value.toLowerCase().trim();
+        const cards = document.querySelectorAll('.note-item-card');
+        let visibleCount = 0;
+
+        cards.forEach(card => {
+            const content = card.getAttribute('data-content') || '';
+            if (content.includes(query)) {
+                card.style.display = 'flex';
+                visibleCount++;
+            } else {
+                card.style.display = 'none';
+            }
+        });
+
+        const badge = document.getElementById('visibleNotesCount');
+        if (badge) badge.textContent = visibleCount + ' visible';
+
+        const noResults = document.getElementById('noSearchResults');
+        if (noResults) {
+            noResults.style.display = (visibleCount === 0 && cards.length > 0) ? 'block' : 'none';
+        }
+    }
+
+    // Auto-expanding textarea & character count
+    const textarea = document.getElementById('newNoteTextarea');
+    const counter = document.getElementById('charCounter');
+    if (textarea && counter) {
+        textarea.addEventListener('input', () => {
+            textarea.style.height = 'auto';
+            textarea.style.height = Math.max(70, textarea.scrollHeight) + 'px';
+            counter.textContent = textarea.value.length + ' characters';
+        });
+    }
+
+    // Copy to clipboard with instant feedback
+    function copyNoteText(button, text) {
+        navigator.clipboard.writeText(text).then(() => {
+            const originalHTML = button.innerHTML;
+            button.innerHTML = '<span class="btn-icon">✓</span> <span class="btn-text">Copied!</span>';
+            button.classList.add('copied-active');
+            setTimeout(() => {
+                button.innerHTML = originalHTML;
+                button.classList.remove('copied-active');
+            }, 1800);
+        }).catch(err => {
+            console.error('Copy failed:', err);
+        });
+    }
+</script>
+{% endblock %}

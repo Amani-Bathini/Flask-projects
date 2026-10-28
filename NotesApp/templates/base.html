@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>{% block title %}NotesApp - Modern Notes Workspace{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+</head>
+
+<body class="{% block body_class %}{% endblock %}">
+
+    <header class="notes-header">
+        <div class="header-container">
+            <a href="{{ url_for('dashboard', username=session.get('username')) if session.get('id') else url_for('login') }}" class="notes-brand">
+                <span class="brand-gem">📝</span>
+                <span class="brand-text">Notes<span class="brand-glow">App</span></span>
+            </a>
+
+            {% if session.get('username') and request is defined and request.endpoint == 'dashboard' %}
+                <div class="header-search">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="liveSearchInput" placeholder="Search your notes..." oninput="filterNotesLive()">
+                </div>
+            {% endif %}
+
+            {% if session.get('username') %}
+                <div class="header-profile">
+                    <div class="profile-chip">
+                        <span class="profile-avatar">{{ session.get('username', 'U')[0]|upper }}</span>
+                        <span class="profile-name">{{ session.get('username') }}</span>
+                    </div>
+                    <a href="{{ url_for('logout') }}" class="btn-header-logout" title="Logout">
+                        <span>Exit</span>
+                    </a>
+                </div>
+            {% else %}
+                <div class="header-auth-links">
+                    <a href="{{ url_for('login') }}" class="nav-auth-link">Login</a>
+                    <a href="{{ url_for('register') }}" class="nav-auth-btn">Register</a>
+                </div>
+            {% endif %}
+        </div>
+    </header>
+
+    <main class="notes-workspace">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    {% block scripts %}
+    {% endblock %}
+
+</body>
+</html>

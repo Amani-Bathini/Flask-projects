@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}NotesApp - Edit Note{% endblock %}
+{% block body_class %}edit-body{% endblock %}
+
+{% block content %}
+<div class="edit-page-container">
+    <div class="edit-modal-card">
+        <div class="edit-card-header">
+            <div class="edit-icon-box">✏️</div>
+            <div class="edit-title-group">
+                <h3>Edit Note</h3>
+                <p class="edit-subtitle">Refine and update your note</p>
+            </div>
+        </div>
+
+        <form method="post" action="/editnote/{{ note.id }}" class="edit-form">
+            <div class="edit-textarea-wrapper">
+                <textarea 
+                    name="notes" 
+                    id="editNoteTextarea" 
+                    class="edit-textarea" 
+                    placeholder="Enter your notes..." 
+                    rows="8" 
+                    required 
+                    autofocus>{{ note.content }}</textarea>
+            </div>
+
+            <div class="edit-meta-bar">
+                <span class="editor-stats" id="editStats">0 words • 0 chars</span>
+            </div>
+
+            <div class="edit-btn-row">
+                <button type="submit" class="btn-save-note">💾 Save Changes</button>
+                <a href="/dashboard/{{ session.get('username', '') }}" class="btn-cancel-edit">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const editArea = document.getElementById('editNoteTextarea');
+    const stats = document.getElementById('editStats');
+    function updateStats() {
+        if (!editArea || !stats) return;
+        const text = editArea.value.trim();
+        const words = text ? text.split(/\s+/).length : 0;
+        const chars = editArea.value.length;
+        stats.textContent = `${words} words • ${chars} chars`;
+    }
+    if (editArea) {
+        editArea.addEventListener('input', updateStats);
+        updateStats();
+    }
+</script>
+{% endblock %}
