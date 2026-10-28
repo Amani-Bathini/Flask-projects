@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %}Smart ATM - Login{% endblock %}
+
+{% block content %}
+    <div class="form-header">
+        <div class="header-icon-circle bg-blue">🔐</div>
+        <h3>Login</h3>
+    </div>
+
+    <form method="post" class="atm-form">
+        <label for="accnum">Account Number:</label>
+        <div class="input-wrapper">
+            <span class="field-icon">💳</span>
+            <input type="text" id="accnum" name="accnum" placeholder="Enter account number" required autocomplete="off" autofocus>
+        </div>
+
+        <label for="pin">PIN:</label>
+        <div class="input-wrapper">
+            <span class="field-icon">🔑</span>
+            <input type="password" id="pin" name="pin" placeholder="Enter PIN" maxlength="6" required autocomplete="off">
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">Login</button>
+    </form>
+
+    {% if info %}
+        <div class="info">{{ info }}</div>
+    {% endif %}
+
+    <div class="auth-links">
+        <a href="{{ url_for('confirmemail') }}" class="forgot-link">Forgot PIN?</a>
+    </div>
+{% endblock %}

@@ -1,0 +1,382 @@
+
+
+Your import:
+from flask import Flask, render_template, redirect, request, session, url_for
+
+Let's understand them one by one.
+1. Flask
+from flask import Flask
+What is it?
+
+Flask is used to create your Flask web application.
+
+Example:
+
+app = Flask(__name__)
+
+Here:
+
+Flask → Flask class
+app → your Flask application object
+__name__ → tells Flask where your application is located
+
+Think of it as:
+
+Flask
+  ↓
+Creates
+  ↓
+Your web application
+
+Without this, you cannot create your Flask app.
+
+2. render_template
+from flask import render_template
+What is it?
+
+render_template() is used to display an HTML page.
+
+Suppose your project has:
+
+atm/
+│
+├── app.py
+│
+└── templates/
+    ├── login.html
+    ├── dashboard.html
+    └── checkbalance.html
+
+You can write:
+
+@app.route('/login')
+def login():
+    return render_template('login.html')
+
+This tells Flask:
+
+"Open login.html from the templates folder and show it to the user."
+
+Example
+return render_template('dashboard.html')
+
+Browser:
+
+/dashboard
+      ↓
+dashboard.html
+      ↓
+User sees dashboard
+You can also send data to HTML
+balance = 5000
+
+return render_template(
+    'checkbalance.html',
+    balance=balance
+)
+
+Then in HTML:
+
+<h2>Your balance is {{ balance }}</h2>
+
+The user will see:
+
+Your balance is 5000
+3. redirect
+from flask import redirect
+What is it?
+
+redirect() sends the user to another route/page.
+
+For example:
+
+return redirect('/dashboard')
+
+means:
+
+"Go to the /dashboard URL."
+
+Suppose the user successfully logs in:
+
+if login_success:
+    return redirect('/dashboard')
+
+The flow is:
+
+Login
+  ↓
+Credentials correct
+  ↓
+redirect('/dashboard')
+  ↓
+Dashboard
+Another example from your project
+
+You have:
+
+@app.route('/')
+def base():
+    return redirect('/login')
+
+When the user opens:
+
+127.0.0.1:5000/
+
+Flask redirects them to:
+
+127.0.0.1:5000/login
+4. request
+from flask import request
+What is it?
+
+request is used to get information sent by the user/browser to your Flask application.
+
+This is very important for forms.
+
+Your login form probably has:
+
+<form method="POST">
+
+    <input name="accnum">
+    <input name="pin">
+
+    <button type="submit">Login</button>
+
+</form>
+
+When the user enters:
+
+Account number: 123456789
+PIN: 12345
+
+and clicks Login, Flask receives that information.
+
+You can get it using:
+
+acc_num = request.form.get('accnum')
+pin = request.form.get('pin')
+
+So:
+
+HTML form
+   ↓
+User enters data
+   ↓
+POST request
+   ↓
+request.form
+   ↓
+Python gets the values
+request.form
+
+Used for POST form data:
+
+request.form.get('accnum')
+request.args
+
+Used for URL query parameters.
+
+For example:
+
+/login?info=Invalid%20Login
+
+You can get:
+
+info = request.args.get('info')
+5. session
+from flask import session
+What is it?
+
+session is used to remember information about the logged-in user between requests.
+
+This is very important in your ATM project.
+
+After successful login:
+
+session["id"] = i["id"]
+
+Now Flask remembers that user's ID.
+
+For example:
+
+User logs in
+     ↓
+id = 101
+     ↓
+session["id"] = 101
+
+Then the user goes to:
+
+/checkbalance
+
+You can access:
+
+session["id"]
+
+and know which user is logged in.
+
+Example
+@app.route('/checkbalance')
+def checkbalance():
+
+    if "id" not in session:
+        return redirect(url_for('login'))
+
+    print(session["id"])
+
+This checks:
+
+"Does the user have a logged-in session?"
+
+Why do we need session?
+
+Imagine:
+
+Login
+ ↓
+Dashboard
+ ↓
+Deposit
+ ↓
+Withdraw
+ ↓
+Check Balance
+
+How does Flask know which user is doing these operations?
+
+That's what session helps with.
+
+For example:
+
+session["id"] = 101
+
+Then:
+
+Dashboard → user 101
+Deposit → user 101
+Withdraw → user 101
+Balance → user 101
+6. url_for
+from flask import url_for
+What is it?
+
+url_for() generates the URL for a Flask function/route.
+
+Suppose you have:
+
+@app.route('/login')
+def login():
+    ...
+
+You can write:
+
+url_for('login')
+
+and Flask generates:
+
+/login
+Why use url_for() instead of writing /login?
+
+You could write:
+
+return redirect('/login')
+
+But Flask recommends:
+
+return redirect(url_for('login'))
+
+Because url_for() uses the function name.
+
+Example:
+
+@app.route('/login')
+def login():
+    ...
+
+Then:
+
+url_for('login')
+Important
+
+url_for() uses the function name, not the URL.
+
+For:
+
+@app.route('/checkbalance')
+def checkbalance():
+
+you write:
+
+url_for('checkbalance')
+
+not:
+
+url_for('/checkbalance')
+Putting all 6 together
+
+Your code:
+
+from flask import Flask, render_template, redirect, request, session, url_for
+
+means:
+
+Import	Purpose	Example
+Flask	Create Flask application	app = Flask(__name__)
+render_template	Display HTML page	render_template('login.html')
+redirect	Send user to another URL	redirect('/dashboard')
+request	Get data from user/browser	request.form.get('pin')
+session	Remember logged-in user	session["id"] = 1
+url_for	Generate route URL	url_for('login')
+Your ATM project flow
+
+This will help you remember them:
+
+                  USER
+                   |
+                   ↓
+             login.html
+                   |
+                   | POST
+                   ↓
+               request
+                   |
+                   ↓
+             Check account
+             number + PIN
+                   |
+            ┌──────┴──────┐
+            |             |
+          Wrong          Correct
+            |             |
+            ↓             ↓
+         redirect      session
+         login         stores ID
+                          |
+                          ↓
+                       redirect
+                       dashboard
+                          |
+                          ↓
+                    render_template
+                    dashboard.html
+                          |
+                          ↓
+                    Check Balance
+                          |
+                          ↓
+                     session["id"]
+                          |
+                          ↓
+                    Get user balance
+                          |
+                          ↓
+                    render_template
+                    checkbalance.html
+Easy way to remember
+
+Flask → Create app
+render_template → Show HTML
+redirect → Go somewhere else
+request → Receive user data
+session → Remember user
+url_for → Generate route URL

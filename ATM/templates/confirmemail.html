@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}Smart ATM - PIN Reset{% endblock %}
+
+{% block content %}
+    <div class="form-header">
+        <div class="header-icon-circle bg-blue">✉️</div>
+        <h3>Verify Email</h3>
+        <p class="form-subtitle">Enter your registered email address to receive an OTP</p>
+    </div>
+
+    <form method="post" class="atm-form">
+        <label for="emailInput">Registered Email Address:</label>
+        <div class="input-wrapper">
+            <span class="field-icon">📧</span>
+            <input type="email" id="emailInput" name="email" placeholder="e.g. user@example.com" required autofocus>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">Send OTP Code</button>
+    </form>
+
+    {% if info %}
+        <div class="info">{{ info }}</div>
+    {% endif %}
+
+    <div class="action-footer">
+        <a href="{{ url_for('login') }}" class="btn-back">← Back to Login</a>
+    </div>
+{% endblock %}

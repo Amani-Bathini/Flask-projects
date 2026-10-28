@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>{% block title %}Smart ATM{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+</head>
+
+<body>
+
+    <header class="app-header">
+        <div class="header-inner">
+            <a href="{{ url_for('dashboard') if session.get('id') else url_for('login') }}" class="brand-link">
+                <span class="atm-logo-badge">ATM</span>
+                <span class="brand-title">Smart <span class="brand-accent">ATM</span></span>
+            </a>
+
+            {% if session.get('username') %}
+                <div class="header-user">
+                    <span class="user-chip">
+                        <span class="user-icon">👤</span>
+                        <span class="user-name">{{ session.get('username') }}</span>
+                    </span>
+                    <a href="{{ url_for('logout') }}" class="header-logout" title="Logout">Logout</a>
+                </div>
+            {% endif %}
+        </div>
+    </header>
+
+    <main class="main-wrapper">
+        <div class="container {% block container_class %}{% endblock %}">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </main>
+
+</body>
+</html>

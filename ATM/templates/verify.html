@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}Smart ATM - Verify OTP{% endblock %}
+
+{% block content %}
+    <div class="form-header">
+        <div class="header-icon-circle bg-emerald">🛡️</div>
+        <h3>OTP Verification</h3>
+        <p class="form-subtitle">Enter the 6-digit one-time password sent to your email</p>
+    </div>
+
+    <form method="post" class="atm-form">
+        <label for="otpInput">Enter 6-Digit OTP:</label>
+        <div class="input-wrapper">
+            <span class="field-icon">🔢</span>
+            <input type="text" id="otpInput" name="otp" maxlength="6" pattern="[0-9]{6}" placeholder="• • • • • •" required autofocus class="otp-input-box">
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">Verify OTP</button>
+    </form>
+
+    {% if info %}
+        <div class="info">{{ info }}</div>
+    {% endif %}
+
+    <div class="action-footer">
+        <a href="{{ url_for('login') }}" class="btn-back">← Back to Login</a>
+    </div>
+{% endblock %}

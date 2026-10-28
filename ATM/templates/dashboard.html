@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}Smart ATM - Dashboard{% endblock %}
+{% block container_class %}container-dashboard{% endblock %}
+
+{% block content %}
+    <div class="dashboard-header">
+        <h3>Welcome, {{ username if username else 'to the ATM' }}</h3>
+    </div>
+
+    <div class="dashboard-menu">
+        <a href="{{ url_for('checkbalance') }}" class="menu-card" id="btnCheckBalance">
+            <div class="menu-icon-box">💰</div>
+            <div class="menu-card-content">
+                <span class="menu-card-title">Check Balance</span>
+                <span class="menu-card-desc">View your real-time available funds</span>
+            </div>
+            <span class="menu-card-arrow">→</span>
+        </a>
+
+        <a href="{{ url_for('deposit') }}" class="menu-card" id="btnDeposit">
+            <div class="menu-icon-box">📥</div>
+            <div class="menu-card-content">
+                <span class="menu-card-title">Deposit Money</span>
+                <span class="menu-card-desc">Add cash directly to your balance</span>
+            </div>
+            <span class="menu-card-arrow">→</span>
+        </a>
+
+        <a href="{{ url_for('withdraw') }}" class="menu-card" id="btnWithdraw">
+            <div class="menu-icon-box">📤</div>
+            <div class="menu-card-content">
+                <span class="menu-card-title">Withdraw Cash</span>
+                <span class="menu-card-desc">Quick cash withdrawal from ATM</span>
+            </div>
+            <span class="menu-card-arrow">→</span>
+        </a>
+
+        <a href="{{ url_for('transaction') }}" class="menu-card" id="btnTransactions">
+            <div class="menu-icon-box">📜</div>
+            <div class="menu-card-content">
+                <span class="menu-card-title">Transaction History</span>
+                <span class="menu-card-desc">View records & download PDF statement</span>
+            </div>
+            <span class="menu-card-arrow">→</span>
+        </a>
+    </div>
+
+    <div class="logout-section">
+        <a href="{{ url_for('logout') }}" class="btn-logout">Logout</a>
+    </div>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}Smart ATM - Balance{% endblock %}
+
+{% block content %}
+    <div class="balance-display-box">
+        <div class="card-chip-badge">🏦 Savings Account</div>
+        <span class="balance-title">Available Balance</span>
+        <div class="balance-amount">₹{{ "{:,.2f}".format(balance) if balance is number else balance }}</div>
+        <div class="balance-verified">✓ Real-time Verified</div>
+    </div>
+
+    <div class="balance-actions-grid">
+        <a href="{{ url_for('deposit') }}" class="btn-action-tile">
+            <span>📥</span>
+            <span>Deposit</span>
+        </a>
+        <a href="{{ url_for('withdraw') }}" class="btn-action-tile">
+            <span>📤</span>
+            <span>Withdraw</span>
+        </a>
+        <a href="{{ url_for('transaction') }}" class="btn-action-tile">
+            <span>📄</span>
+            <span>Statement</span>
+        </a>
+    </div>
+
+    <div class="action-footer">
+        <a href="{{ url_for('dashboard') }}" class="btn-back">← Back to Dashboard</a>
+    </div>
+{% endblock %}

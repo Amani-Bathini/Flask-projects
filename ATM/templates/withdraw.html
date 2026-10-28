@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}Smart ATM - Withdraw Cash{% endblock %}
+
+{% block content %}
+    <div class="form-header">
+        <div class="header-icon-circle bg-amber">📤</div>
+        <h3>Withdraw Cash</h3>
+        <p class="form-subtitle">Enter the amount of cash you wish to withdraw</p>
+    </div>
+
+    <form method="post" class="atm-form">
+        <label for="withdrawInput">Enter Amount (₹):</label>
+        <div class="input-with-prefix">
+            <span class="currency-symbol">₹</span>
+            <input type="number" id="withdrawInput" name="amount" min="1" step="1" placeholder="e.g. 2000" required autofocus>
+        </div>
+
+        <div class="quick-chips">
+            <button type="button" class="chip-btn" onclick="document.getElementById('withdrawInput').value=500">₹500</button>
+            <button type="button" class="chip-btn" onclick="document.getElementById('withdrawInput').value=1000">₹1,000</button>
+            <button type="button" class="chip-btn" onclick="document.getElementById('withdrawInput').value=2000">₹2,000</button>
+            <button type="button" class="chip-btn" onclick="document.getElementById('withdrawInput').value=5000">₹5,000</button>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">Confirm Withdrawal</button>
+    </form>
+
+    {% if info %}
+        <div class="info">{{ info }}</div>
+    {% endif %}
+
+    <div class="action-footer">
+        <a href="{{ url_for('dashboard') }}" class="btn-back">← Back to Dashboard</a>
+    </div>
+{% endblock %}

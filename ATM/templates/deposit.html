@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}Smart ATM - Deposit Money{% endblock %}
+
+{% block content %}
+    <div class="form-header">
+        <div class="header-icon-circle bg-emerald">📥</div>
+        <h3>Deposit Funds</h3>
+        <p class="form-subtitle">Insert or specify the amount you want to deposit</p>
+    </div>
+
+    <form method="post" class="atm-form">
+        <label for="amountInput">Enter Amount (₹):</label>
+        <div class="input-with-prefix">
+            <span class="currency-symbol">₹</span>
+            <input type="number" id="amountInput" name="amount" min="1" step="1" placeholder="e.g. 5000" required autofocus>
+        </div>
+
+        <div class="quick-chips">
+            <button type="button" class="chip-btn" onclick="document.getElementById('amountInput').value=500">+₹500</button>
+            <button type="button" class="chip-btn" onclick="document.getElementById('amountInput').value=1000">+₹1,000</button>
+            <button type="button" class="chip-btn" onclick="document.getElementById('amountInput').value=2000">+₹2,000</button>
+            <button type="button" class="chip-btn" onclick="document.getElementById('amountInput').value=5000">+₹5,000</button>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">Confirm Deposit</button>
+    </form>
+
+    {% if info %}
+        <div class="info">{{ info }}</div>
+    {% endif %}
+
+    <div class="action-footer">
+        <a href="{{ url_for('dashboard') }}" class="btn-back">← Back to Dashboard</a>
+    </div>
+{% endblock %}
